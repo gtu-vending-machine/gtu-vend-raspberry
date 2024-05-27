@@ -1,61 +1,54 @@
-import requests
-import threading
+import RPi.GPIO as GPIO
 import time
 
-API_URL = "http://localhost:4000/api/v1"
+# Define the rows and columns for the keypad
+ROWS = [4, 17, 27, 22]  # Adjust GPIO pins accordingly
+COLS = [18, 23, 24]     # Adjust GPIO pins accordingly
 
+# Keypad button layout
+KEYPAD = [
+    ['1', '2', '3'],
+    ['4', '5', '6'],
+    ['7', '8', '9'],
+    ['*', '0', '#']
+]
 
-class Machine:
-    def __init__(self, username, password):
-        self.username = username
-        self.name = username
-        self.password = password
-        self.id = None
-        self.token = None
-    
-    def __str__(self):
-        return f"Machine({self.id}, {self.username}, {self.token})"
+def setup():
+    GPIO.setmode(GPIO.BCM)
 
-    def get_headers(self):
-        return {
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {self.token}"
-        }
+    # Setup row pins as outputs
+    for row in ROWS:
+        GPIO.setup(row, GPIO.OUT)
+        GPIO.output(row, GPIO.LOW)
 
-machine = Machine("machine", "machine")
+    # Setup column pins as inputs with pull-up resistors
+    for col in COLS:
+        GPIO.setup(col, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-def approve_transaction(code):
-    response = requests.put(f"{API_URL}/transactions/approve", json={"code": code}, headers=machine.get_headers())
-
-    return response.json()
-
-def login():
-    response = requests.post(f"{API_URL}/login", json={"username": machine.username, "password": machine.password})
-
-    return response.json()
-
-def print_prompt():
-    while True:
-        print("Enter the code: ")
-        time.sleep(3)
-
+def read_keypad():
+    pressed_key = None
+    for row_index, row in enumerate(ROWS):
+        GPIO.output(row, GPIO.HIGH)
+        for col_index, col in enumerate(COLS):
+            if GPIO.input(col) == GPIO.LOW:
+                pressed_key = KEYPAD[row_index][col_index]
+                while GPIO.input(col) == GPIO.LOW:
+                    pass  # Wait for the button to be released
+        GPIO.output(row, GPIO.LOW)
+    return pressed_key
 
 def main():
-    # login
-    response = login()
+    setup()
+    try:
+        while True:
+            key = read_keypad()
+            if key:
+                print(f"Key pressed: {key}")
+            time.sleep(0.1)  # Polling interval
+    except KeyboardInterrupt:
+        print("Program stopped by user")
+    finally:
+        GPIO.cleanup()
 
-    # set machine id and token
-    machine.id = response["user"]["id"]
-    machine.token = response["user"]["token"]
-
-    threading.Thread(target=print_prompt, daemon=True).start()
-
-    # take code from the user and approve the transaction
-    while True:
-        code = input()
-        response = approve_transaction(code)
-        print(response)
-
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

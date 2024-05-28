@@ -40,10 +40,11 @@ def main():
                     lcd_string("Processing...", LCD_LINE_1)
                     lcd_string(code, LCD_LINE_2)
                     response = machine.approve_transaction(code)
-                    # if there is not response, print error to display
+                    # if there is not response, display error
                     if "hasConfirmed" in response:
                         lcd_string("Transaction", LCD_LINE_1)
                         lcd_string("Approved", LCD_LINE_2)
+                        print("response: ", response)
                         time.sleep(3)
                         welcome()
                     else:

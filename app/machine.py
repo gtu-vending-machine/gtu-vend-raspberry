@@ -31,30 +31,29 @@ class Machine:
         response = requests.post(f"{API_URL}/login", json={"username": self.username, "password": self.password})
 
         return response.json()
-    
-def machine_setup(machine):
-    # login
-    response = machine.login()
+    def setup(self):
+        # login
+        response = self.login()
 
-    print(response)
+        print(response)
 
-    # if response is not, print error to display
-    if "user" not in response:
-        # lcd_string("Login failed", LCD_LINE_1)
-        # lcd_string("Check credentials", LCD_LINE_2)
-        while True:
-            lcd_string("Login failed", LCD_LINE_1)
-            lcd_string("Check credentials", LCD_LINE_2)
-    else:
-        # set machine id and token
-        machine.id = response["user"]["id"]
-        machine.token = response["user"]["token"]
-        # show success message for 3 seconds
-        lcd_string("Login successful", LCD_LINE_1)
-        lcd_string("Welcome", LCD_LINE_2)
-        time.sleep(3)
-        lcd_string("", LCD_LINE_1)
-        lcd_string("", LCD_LINE_2)
+        # if response is not, print error to display
+        if "user" not in response:
+            # lcd_string("Login failed", LCD_LINE_1)
+            # lcd_string("Check credentials", LCD_LINE_2)
+            while True:
+                lcd_string("Login failed", LCD_LINE_1)
+                lcd_string("Check credentials", LCD_LINE_2)
+        else:
+            # set machine id and token
+            self.id = response["user"]["id"]
+            self.token = response["user"]["token"]
+            # show success message for 3 seconds
+            lcd_string("Login successful", LCD_LINE_1)
+            lcd_string("Welcome", LCD_LINE_2)
+            time.sleep(3)
+            lcd_string("", LCD_LINE_1)
+            lcd_string("", LCD_LINE_2)
 
 
     

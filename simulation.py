@@ -45,6 +45,8 @@ def main():
     # login
     response = login()
 
+    print(response)
+
     # set machine id and token
     machine.id = response["user"]["id"]
     machine.token = response["user"]["token"]

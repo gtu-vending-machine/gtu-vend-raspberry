@@ -1,10 +1,19 @@
 from lcd import lcd_init, lcd_string, lcd_byte, LCD_LINE_1, LCD_LINE_2, LCD_CMD
 from keypad import setup_keypad, get_key, destroy
+from machine import Machine, machine_setup
 import time
 
+
+machine = Machine("machine", "machine1")
+
+
 def main():
+
     # Initialize LCD display
     lcd_init()
+
+       # Setup machine
+    machine_setup(machine)
 
     # Initialize keypad
     setup_keypad()

@@ -16,13 +16,8 @@ code = ""
 def print_prompt():
     # if loading is true, otherwise, print "enter the code"
     while True:
-        if loading:
-            lcd_string("Loading...", LCD_LINE_1)
-            lcd_string("", LCD_LINE_2)
-        else:
-            lcd_string("Enter the code:", LCD_LINE_1)
-            lcd_string("", LCD_LINE_2)
-        time.sleep(0.5)
+        lcd_string("Loading..." if loading else "Enter the code:", LCD_LINE_1)
+        time.sleep(0.1)
 
 # second line thread
 def print_code():
@@ -44,69 +39,37 @@ def main():
     setup_keypad()
 
     
-    # try:
-    #     while True:
-    #         key = get_key()
-    #         if key:
-    #             # Clear display if '*' is pressed
-    #             if key == '*':
-    #                 code = ""
-    #                 lcd_string("Cleared", LCD_LINE_1)
-    #                 lcd_string("", LCD_LINE_2)
-    #             # Confirm display if '#' is pressed
-    #             elif key == '#':
-    #                 lcd_string("Input:", LCD_LINE_1)
-    #                 lcd_string(code, LCD_LINE_2)
-    #             else:
-    #                 if len(code) < 16:  # Ensure it fits on one line
-    #                     code += key
-    #                 lcd_string("Input:", LCD_LINE_1)
-    #                 lcd_string(code, LCD_LINE_2)
-    #         time.sleep(0.1)
-    # except KeyboardInterrupt:
-    #     destroy()
-    #     lcd_byte(0x01, LCD_CMD)  # Clear display
-
     # start the first line thread
     threading.Thread(target=print_prompt, daemon=True).start()
     # start the second line thread
     threading.Thread(target=print_code, daemon=True).start()
 
+    # take code from the user and approve the transaction
     try:
         while True:
             key = get_key()
-            if key:
-                # Clear display if '*' is pressed
-                if key == '*':
-                    code = ""
-                    lcd_string("Cleared", LCD_LINE_1)
-                    lcd_string("", LCD_LINE_2)
-                # Confirm display if '#' is pressed
-                elif key == '#':
-                    loading = True
-                    machine.approve_transaction(code)
-                    loading = False
-                    code = ""
-                    lcd_string("Transaction", LCD_LINE_1)
-                    lcd_string("Approved", LCD_LINE_2)
-                    time.sleep(3)
-                else:
-                    if len(code) < 16:  # Ensure it fits on one line
-                        code += key
-                    lcd_string("Input:", LCD_LINE_1)
-                    lcd_string(code, LCD_LINE_2)
-            time.sleep(0.1)
+            if key == "#":
+                # if the user presses #, approve the transaction
+                loading = True
+                response = machine.approve_transaction(code)
+                loading = False
+                code = ""
+                lcd_string(response["message"], LCD_LINE_1)
+                time.sleep(3)
+            elif key == "*":
+                # if the user presses *, clear the code
+                code = ""
+            else:
+                # add the key to the code
+                code += key
     except KeyboardInterrupt:
         destroy()
-        lcd_byte(0x01, LCD_CMD)
-        # Clear display
-        lcd_string("Goodbye", LCD_LINE_1)
-        time.sleep(2)
-        lcd_byte(0x01, LCD_CMD)
-        # Clear display
-        lcd_string("", LCD_LINE_1)
-        lcd_string("", LCD_LINE_2)
+        print("Exiting...")
         exit(0)
+
+
+   
+
 
 if __name__ == '__main__':
     main()

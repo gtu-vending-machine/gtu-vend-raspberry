@@ -36,18 +36,33 @@ def main():
                     lcd_string(code, LCD_LINE_2)
                     response = machine.approve_transaction(code)
                     print(response)
-                    if "message" in response:
-                        lcd_string(response["message"], LCD_LINE_1)
-                        lcd_string("", LCD_LINE_2)
+                    # if "message" in response:
+                    #     lcd_string(response["message"], LCD_LINE_1)
+                    #     lcd_string("", LCD_LINE_2)
+                    #     time.sleep(3)
+                    #     lcd_string("", LCD_LINE_1)
+                    #     lcd_string("", LCD_LINE_2)
+                    # else:
+                    #     lcd_string("Error", LCD_LINE_1)
+                    #     lcd_string("Try again", LCD_LINE_2)
+                    #     time.sleep(3)
+                    #     lcd_string("", LCD_LINE_1)
+                    #     lcd_string("", LCD_LINE_2)
+                    # result: {'id': 13, 'hasConfirmed': True, 'userId': 1, 'slot': {'stock': 20, 'id': 1, 'index': 0}, 'product': {'price': 20}}
+                    if response["hasConfirmed"]:
+                        lcd_string("Transaction", LCD_LINE_1)
+                        lcd_string("Approved", LCD_LINE_2)
                         time.sleep(3)
                         lcd_string("", LCD_LINE_1)
                         lcd_string("", LCD_LINE_2)
                     else:
-                        lcd_string("Error", LCD_LINE_1)
-                        lcd_string("Try again", LCD_LINE_2)
+                        lcd_string("Transaction", LCD_LINE_1)
+                        lcd_string("Failed", LCD_LINE_2)
                         time.sleep(3)
                         lcd_string("", LCD_LINE_1)
                         lcd_string("", LCD_LINE_2)
+                    code = ""
+
                 else:
                     if len(code) < 16:
                         code += key

@@ -4,7 +4,7 @@ from machine import Machine, machine_setup
 import time
 
 
-machine = Machine("machine", "machine1")
+machine = Machine("machine", "machine")
 
 
 def main():

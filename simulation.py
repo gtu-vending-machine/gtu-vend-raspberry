@@ -2,7 +2,8 @@ import requests
 import threading
 import time
 
-API_URL = "http://localhost:4000/api/v1"
+API_URL = "https://gtu-vend-web-server.onrender.com/api/v1"
+# API_URL = "http://localhost:4000/api/v1"
 
 
 class Machine:

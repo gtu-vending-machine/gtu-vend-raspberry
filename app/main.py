@@ -35,6 +35,7 @@ def main():
                     lcd_string("Input:", LCD_LINE_1)
                     lcd_string(code, LCD_LINE_2)
                     response = machine.approve_transaction(code)
+                    print(response)
                     if "message" in response:
                         lcd_string(response["message"], LCD_LINE_1)
                         lcd_string("", LCD_LINE_2)

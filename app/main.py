@@ -13,20 +13,24 @@ loading = False
 code = ""
         
 # first line thread
-def print_prompt():
-    # if loading is true, otherwise, print "enter the code"
+def first_line():
+    global loading
     while True:
-        lcd_string("Loading..." if loading else "Enter the code:", LCD_LINE_1)
-        time.sleep(0.1)
+        if not loading:
+            lcd_string("Input:", LCD_LINE_1)
+            time.sleep(0.1)
+        else:
+            lcd_string("Loading...", LCD_LINE_1)
+            time.sleep(0.1)
 
 # second line thread
-def print_code():
-    # print the code being entered by the user
+def second_line():
+    global code
     while True:
         lcd_string(code, LCD_LINE_2)
         time.sleep(0.1)
 
-
+# main function
 def main():
 
     # Initialize LCD display
@@ -38,37 +42,33 @@ def main():
     # Initialize keypad
     setup_keypad()
 
-    
-    # start the first line thread
-    threading.Thread(target=print_prompt, daemon=True).start()
-    # start the second line thread
-    threading.Thread(target=print_code, daemon=True).start()
+    # Start first line thread
+    t1 = threading.Thread(target=first_line)
+    t1.start()
 
-    # take code from the user and approve the transaction
+    # Start second line thread
+    t2 = threading.Thread(target=second_line)
+    t2.start()
+
     try:
         while True:
             key = get_key()
             if key == "#":
-                # if the user presses #, approve the transaction
+                global loading
                 loading = True
-                response = machine.approve_transaction(code)
+                machine.run(code)
                 loading = False
                 code = ""
-                lcd_string(response["message"], LCD_LINE_1)
-                time.sleep(3)
             elif key == "*":
-                # if the user presses *, clear the code
                 code = ""
-            else:
-                # add the key to the code
+            elif key != None:
                 code += key
+            time.sleep(0.1)
     except KeyboardInterrupt:
         destroy()
-        print("Exiting...")
-        exit(0)
-
-
-   
+        machine.cleanup()
+        t1.join()
+        t2.join()
 
 
 if __name__ == '__main__':

@@ -1,4 +1,4 @@
-from lcd import lcd_init, lcd_string, LCD_LINE_1, LCD_LINE_2
+from lcd import lcd_init, lcd_string, lcd_byte, LCD_LINE_1, LCD_LINE_2, LCD_CMD
 from keypad import setup_keypad, get_key, destroy
 import time
 

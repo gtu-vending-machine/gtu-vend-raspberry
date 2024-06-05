@@ -1,33 +1,26 @@
-import time
+from gpiozero import Servo
+from time import sleep
 
-import RPi.GPIO as GPIO
-
-# Set GPIO mode and pin number
-GPIO.setmode(GPIO.BCM)
-servo_pin = 37
-
-# Set servo motor properties
-GPIO.setup(servo_pin, GPIO.OUT)
-servo = GPIO.PWM(servo_pin, 50)  # 50 Hz frequency
-
-# Start servo motor
-servo.start(0)
+# Raspberry Pi'nin 33 numaralı pinini kullanarak Servo nesnesi oluştur
+servo = Servo(33)
 
 try:
     while True:
-        # Rotate servo motor to 0 degrees
-        servo.ChangeDutyCycle(2.5)
-        time.sleep(1)
-
-        # Rotate servo motor to 90 degrees
-        servo.ChangeDutyCycle(7.5)
-        time.sleep(1)
-
-        # Rotate servo motor to 180 degrees
-        servo.ChangeDutyCycle(12.5)
-        time.sleep(1)
+        # Servo motoru minimum konuma (-1) hareket ettir
+        servo.min()
+        print("Servo minimum konumda")
+        sleep(1)  # 1 saniye bekle
+        
+        # Servo motoru orta konuma (0) hareket ettir
+        servo.mid()
+        print("Servo orta konumda")
+        sleep(1)  # 1 saniye bekle
+        
+        # Servo motoru maksimum konuma (+1) hareket ettir
+        servo.max()
+        print("Servo maksimum konumda")
+        sleep(1)  # 1 saniye bekle
 
 except KeyboardInterrupt:
-    # Stop servo motor and clean up GPIO
-    servo.stop()
-    GPIO.cleanup()
+    # CTRL+C basılınca döngüyü durdur
+    print("Program sonlandırıldı")

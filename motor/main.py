@@ -6,7 +6,7 @@ import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BOARD)
 
 # Set the pin number
-servo_pin = 37
+servo_pin = 35
 
 # Set the PWM frequency and duty cycle
 frequency = 50

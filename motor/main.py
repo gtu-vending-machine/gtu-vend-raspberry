@@ -1,37 +1,34 @@
+import RPi.GPIO as GPIO
 import time
 
-import RPi.GPIO as GPIO
+# Pin Definitions
+servo_pin = 13  # GPIO 13 (PWM1)
 
-# Set the GPIO mode
-GPIO.setmode(GPIO.BCM)
+# Setup GPIO
+GPIO.setmode(GPIO.BCM)  # Broadcom pin-numbering scheme
+GPIO.setup(servo_pin, GPIO.OUT)  # Set GPIO pin as an output
 
-# Set the GPIO pin for the servo motor
-servo_pin = 13
+# Set up PWM (Pulse Width Modulation)
+pwm_frequency = 50  # Frequency in Hz (50 Hz is common for servos)
+pwm = GPIO.PWM(servo_pin, pwm_frequency)
+pwm.start(0)  # Initialization with 0% duty cycle
 
-# Set the frequency for the servo motor
-frequency = 50
+def set_servo_angle(angle):
+    """Set the servo angle.
+    
+    Args:
+        angle (int): Angle in degrees, typically between 0 and 180.
+    """
+    duty_cycle = (angle / 18.0) + 2.5  # Convert angle to duty cycle
+    pwm.ChangeDutyCycle(duty_cycle)  # Change the duty cycle
+    time.sleep(1)  # Wait 1 second for the servo to reach the position
 
-# Initialize the GPIO pin for the servo motor
-GPIO.setup(servo_pin, GPIO.OUT)
-
-# Create a PWM object for the servo motor
-pwm = GPIO.PWM(servo_pin, frequency)
-
-# Start the PWM signal with a duty cycle of 0 (servo motor at 0 degrees)
-pwm.start(0)
-
-# Function to set the angle of the servo motor
-def set_angle(angle):
-    duty_cycle = angle / 18 + 2
-    GPIO.output(servo_pin, True)
-    pwm.ChangeDutyCycle(duty_cycle)
-    time.sleep(1)
-    GPIO.output(servo_pin, False)
-    pwm.ChangeDutyCycle(0)
-
-# Example usage: set the servo motor to 90 degrees
-set_angle(90)
-
-# Cleanup GPIO
-pwm.stop()
-GPIO.cleanup()
+try:
+    # Set servo to 90 degrees
+    set_servo_angle(90)
+    print("Servo moved to 90 degrees.")
+except KeyboardInterrupt:
+    print("Program exited by user.")
+finally:
+    pwm.stop()  # Stop PWM
+    GPIO.cleanup()  # Clean up GPIO to reset pins

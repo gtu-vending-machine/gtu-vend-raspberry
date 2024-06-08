@@ -25,6 +25,8 @@ class Machine:
         }
 
     def approve_transaction(self, code):
+        print("code: ", code)
+        print("id: ", self.id)
         response = requests.put(
             f"{API_URL}/transactions/approve",
             json={"code": code, "vendingMachineId": self.id},

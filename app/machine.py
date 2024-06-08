@@ -3,7 +3,8 @@ from lcd import lcd_string, LCD_LINE_1, LCD_LINE_2
 import time
 
 
-API_URL = "https://gtu-vend-web-server.onrender.com/api/v1"
+# API_URL = "https://gtu-vend-web-server.onrender.com/api/v1"
+API_URL = "http://192.168.3.189:4000/api/v1"
 
 
 class Machine:

@@ -58,7 +58,7 @@ class Machine:
                 lcd_string("Check credentials", LCD_LINE_2)
         else:
             # set machine id and token
-            self.id = response["user"]["id"]
+            # self.id = response["user"]["id"]
             self.token = response["user"]["token"]
             # show success message for 3 seconds
             lcd_string("Login successful", LCD_LINE_1)

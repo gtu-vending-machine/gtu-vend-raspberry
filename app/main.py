@@ -4,18 +4,20 @@ from machine import Machine
 import time
 
 
-machine = Machine("machine", "machine")
+machine = Machine("machine", "machine", id=1)
+
 
 def welcome():
     lcd_string("Welcome", LCD_LINE_1)
     lcd_string("Input the code", LCD_LINE_2)
+
 
 def main():
 
     # Initialize LCD display
     lcd_init()
 
-       # Setup machine
+    # Setup machine
     machine.setup()
 
     # Initialize keypad
@@ -30,13 +32,13 @@ def main():
         while True:
             key = get_key()
             if key:
-                if key == '*':
+                if key == "*":
                     code = ""
                     lcd_string("Cleared", LCD_LINE_1)
                     lcd_string("", LCD_LINE_2)
                     time.sleep(1)
                     welcome()
-                elif key == '#':
+                elif key == "#":
                     lcd_string("Processing...", LCD_LINE_1)
                     lcd_string(code, LCD_LINE_2)
                     response = machine.approve_transaction(code)
@@ -63,5 +65,6 @@ def main():
         destroy()
         lcd_byte(0x01, LCD_CMD)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

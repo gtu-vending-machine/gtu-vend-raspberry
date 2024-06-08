@@ -5,32 +5,41 @@ import time
 
 API_URL = "https://gtu-vend-web-server.onrender.com/api/v1"
 
+
 class Machine:
-    def __init__(self, username, password):
+    def __init__(self, username, password, id):
         self.username = username
         self.name = username
         self.password = password
-        self.id = None
+        self.id = id
         self.token = None
-    
+
     def __str__(self):
         return f"Machine({self.id}, {self.username}, {self.token})"
 
     def get_headers(self):
         return {
             "Content-Type": "application/json",
-            "Authorization": f"Bearer {self.token}"
+            "Authorization": f"Bearer {self.token}",
         }
-    
+
     def approve_transaction(self, code):
-        response = requests.put(f"{API_URL}/transactions/approve", json={"code": code}, headers=self.get_headers())
+        response = requests.put(
+            f"{API_URL}/transactions/approve",
+            json={"code": code, "vendingMachineId": self.id},
+            headers=self.get_headers(),
+        )
 
         return response.json()
-    
+
     def login(self):
-        response = requests.post(f"{API_URL}/login", json={"username": self.username, "password": self.password})
+        response = requests.post(
+            f"{API_URL}/login",
+            json={"username": self.username, "password": self.password},
+        )
 
         return response.json()
+
     def setup(self):
         # login
         response = self.login()
@@ -54,8 +63,3 @@ class Machine:
             time.sleep(3)
             lcd_string("", LCD_LINE_1)
             lcd_string("", LCD_LINE_2)
-
-
-    
-
-

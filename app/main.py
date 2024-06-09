@@ -51,9 +51,9 @@ def main():
                         lcd_string("Approved", LCD_LINE_2)
                         print("response: ", response)
                         # if response.slot.id == 1, run motor1
-                        if response["slot"]["id"] == 1:
+                        if response["slot"]["index"] == 0:
                             motor1.backward(4)
-                        elif response["slot"]["id"] == 2:
+                        elif response["slot"]["index"] == 1:
                             motor2.backward(4)
                         time.sleep(3)
                         welcome()

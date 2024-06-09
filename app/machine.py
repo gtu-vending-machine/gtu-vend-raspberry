@@ -4,7 +4,7 @@ import time
 
 
 # API_URL = "https://gtu-vend-web-server.onrender.com/api/v1"
-API_URL = "http://192.168.3.189:4000/api/v1"
+API_URL = "http://192.168.61.189:4000/api/v1"
 
 
 class Machine:

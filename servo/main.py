@@ -29,5 +29,5 @@ def motor_stop():
 
 
 # Example usage:
-motor_forward(5)  # Run motor forward for 5 seconds
+# motor_forward(5)  # Run motor forward for 5 seconds
 motor_backward(5)  # Run motor backward for 5 seconds

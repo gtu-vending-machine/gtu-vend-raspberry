@@ -1,10 +1,13 @@
 from lcd import lcd_init, lcd_string, lcd_byte, LCD_LINE_1, LCD_LINE_2, LCD_CMD
 from keypad import setup_keypad, get_key, destroy
 from machine import Machine
+from motor import Motor
 import time
 
 
 machine = Machine("machine", "machine", id=1)
+motor1 = Motor(5, 6)
+motor2 = Motor(16, 26)
 
 
 def welcome():
@@ -47,6 +50,11 @@ def main():
                         lcd_string("Transaction", LCD_LINE_1)
                         lcd_string("Approved", LCD_LINE_2)
                         print("response: ", response)
+                        # if response.slot.id == 1, run motor1
+                        if response["slot"]["id"] == 1:
+                            motor1.backward(4)
+                        elif response["slot"]["id"] == 2:
+                            motor2.backward(4)
                         time.sleep(3)
                         welcome()
                     else:
